@@ -1,4 +1,4 @@
-**WORK IN PROGRESS**
+**WORK IN PROGRESS** [![Build Status](https://travis-ci.org/florenthobein/comet-widgets.svg?branch=master)](https://travis-ci.org/florenthobein/comet-widgets)
 
 Comet Widgets
 ===
@@ -18,6 +18,7 @@ git clone git@github.com:cometapp/comet-widgets.git comet-widgets
 # Usage
 
 ```html
+<!-- include bootstrap.css -->
 <!-- include jquery.js -->
 <!-- include bootstrap.js -->
 <script src="...link/to/the/file/comet-widgets.0.0.1.js"></script>
@@ -38,7 +39,7 @@ Thel `ALBUM_ID` is either a comet `short_id` if the album owns one, or the `univ
 
 # Examples
 
-Cf the [example folder](https://github.com/cometapp/comet-widgets/tree/examples).
+Cf the [example folder](https://github.com/cometapp/comet-widgets/tree/master/example).
 
 # Licence
 [MIT licence](https://opensource.org/licenses/MIT)
