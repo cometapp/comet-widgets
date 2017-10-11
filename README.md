@@ -1,4 +1,4 @@
-**WORK IN PROGRESS** [![Build Status](https://travis-ci.org/florenthobein/comet-widgets.svg?branch=master)](https://travis-ci.org/florenthobein/comet-widgets)
+**WORK IN PROGRESS** [![Build Status](https://travis-ci.org/cometapp/comet-widgets.svg?branch=master)](https://travis-ci.org/cometapp/comet-widgets)
 
 Comet Widgets
 ===
