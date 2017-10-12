@@ -1,7 +1,7 @@
 import $ from 'jquery'
 import 'bootstrap'
 
-export class CarouselTemplate {
+export default class CarouselTemplate {
   public static renderWait(options: any) {
     let carousel: any = {
       id: options.id,

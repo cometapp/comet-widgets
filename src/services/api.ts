@@ -1,7 +1,7 @@
 import Rest from './rest';
 
 import { AlbumModel, MediaModel } from "../models/index"
-import { Utils } from "../comet-utils"
+import Utils from "../comet-utils"
 
 export default class ApiService {
 

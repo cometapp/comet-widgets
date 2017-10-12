@@ -4,7 +4,7 @@ import * as fs from 'fs';
 
 const Rest = {
 
-  get: (url) => new Promise((resolve, reject) => {
+  get: (url: string) => new Promise((resolve, reject) => {
 
     // Matches
     let regAlbum = /\/albums\/([a-z0-9]+)$/g;

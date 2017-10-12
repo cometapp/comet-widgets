@@ -1,5 +1,5 @@
 jest.mock('../src/services/rest')
-console.error = jest.fn(err => {  });
+console.error = jest.fn(err => {});
 
 import * as CometWidgets from '../src/index'
 import Utils from '../src/comet-utils'

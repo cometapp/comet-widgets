@@ -2,7 +2,6 @@
 // import commonjs from 'rollup-plugin-commonjs'
 import sourceMaps from 'rollup-plugin-sourcemaps'
 import camelCase from 'lodash.camelcase'
-import inject from 'rollup-plugin-inject';
 
 // import jQuery from 'jquery';
 
@@ -24,28 +23,6 @@ export default {
     include: 'compiled/**',
   },
   plugins: [
-    inject({
-      include: '**/*.js',
-      exclude: 'node_modules/**',
-      jQuery: 'jquery',
-    })
-    // typescript(),
-    // json({
-    //   exclude: [
-    //     'node_modules/**',
-    //     '**/*.json'
-    //   ]
-    // }),
-
-    // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
-    // commonjs(),
-
-    // Allow node_modules resolution, so you can use 'external' to control
-    // which external modules to include in the bundle
-    // https://github.com/rollup/rollup-plugin-node-resolve#usage
-    // resolve(),
-
-    // Resolve source maps to the original source
-    sourceMaps(),
+    sourceMaps()
   ],
 }

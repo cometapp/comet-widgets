@@ -10,7 +10,20 @@ These plugins depend on [jQuery](https://jquery.com/) and [Bootstrap](https://ge
 
 # Installation
 
-## As an IIFE
+## As a typescript library
+
+Get the library file
+```sh
+npm i --save comet-widgets
+```
+
+Import it in your code
+```javascript
+import * from 'comet-widgets'
+```
+
+
+## In a browser
 
 Get the library file
 ```sh
@@ -19,7 +32,7 @@ cd comet-widgets && npm install && npm run build
 # the library is in the export folder
 ```
 
-Import them into your html
+Import it in your html
 ```html
 <!-- include bootstrap.css -->
 <!-- include jquery.js -->

@@ -2,9 +2,9 @@ import $ from 'jquery'
 
 import ApiService from '../services/api'
 import { AlbumModel, MediaModel } from '../models/index'
-import { Utils } from '../comet-utils'
+import Utils from '../comet-utils'
 
-import { CarouselTemplate } from './carousel-template'
+import CarouselTemplate from './carousel-template'
 
 // Carousel component
 export class Carousel {

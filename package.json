@@ -21,7 +21,7 @@
   },
   "scripts": {
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
-    "prebuild": "rimraf dist",
+    "prebuild": "rimraf dist export",
     "build": "tsc && rollup -c rollup.config.ts && npm run export && rimraf compiled && typedoc --out dist/docs --target es6 --theme minimal src",
     "start": "tsc -w & rollup -c rollup.config.ts -w",
     "test": "jest",
@@ -60,7 +60,7 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 33,
+        "branches": 43,
         "functions": 33,
         "lines": 33,
         "statements": 33
