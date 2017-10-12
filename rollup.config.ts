@@ -1,4 +1,4 @@
-// import inject from 'rollup-plugin-inject'
+import inject from 'rollup-plugin-inject'
 import sourceMaps from 'rollup-plugin-sourcemaps'
 import camelCase from 'lodash.camelcase'
 
@@ -19,11 +19,11 @@ export default {
     include: 'compiled/**',
   },
   plugins: [
-    // inject({
-    //   include: '**/*.js',
-    //   exclude: 'node_modules/**',
-    //   jQuery: 'jquery',
-    // }),
+    inject({
+      include: '**/*.js',
+      exclude: 'node_modules/**',
+      jQuery: 'jquery',
+    }),
     sourceMaps()
   ],
 }
