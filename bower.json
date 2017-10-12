@@ -1,0 +1,19 @@
+{
+  "name": "comet-widgets",
+  "version": "0.0.3-development",
+  "authors": [
+    "Florent Hobein <florent@hobein.fr>"
+  ],
+  "description": "A list of javascript tools to interact with Comet albums",
+  "main": "dist/comet-widgets.js",
+  "license": "MIT",
+  "homepage": "https://github.com/cometapp/comet-widgets",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "export",
+    "test",
+    "tests"
+  ]
+}

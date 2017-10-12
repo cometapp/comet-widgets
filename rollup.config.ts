@@ -9,8 +9,9 @@ const libraryName = pkg.name;
 export default {
   input: `compiled/${libraryName}.js`,
   output: [
-    { file: pkg.main+'.js', name: camelCase(libraryName), format: 'umd' },
-    { file: pkg.module+'.js', format: 'es' },
+    { file: pkg.main, name: camelCase(libraryName), format: 'umd' },
+    { file: pkg.module, format: 'es' },
+    { file: pkg.module, name: camelCase(libraryName), format: 'iife' },
   ],
   sourcemap: true,
   external: [ 'jquery', 'bootstrap' ],

@@ -4,9 +4,9 @@
   "version": "0.0.3-development",
   "description": "",
   "keywords": [],
-  "main": "dist/comet-widgets.umd",
-  "module": "dist/comet-widgets.es5",
-  "typings": "dist/types/comet-widgets.d.ts",
+  "main": "dist/comet-widgets.js",
+  "module": "export/comet-widgets.es5.js",
+  "typings": "export/types/comet-widgets.d.ts",
   "files": [
     "dist"
   ],
@@ -21,8 +21,8 @@
   },
   "scripts": {
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
-    "prebuild": "rimraf dist export",
-    "build": "tsc && rollup -c rollup.config.ts && npm run export && rimraf compiled && typedoc --out dist/docs --target es6 --theme minimal src",
+    "prebuild": "rimraf dist export docs",
+    "build": "tsc && rollup -c rollup.config.ts && rimraf compiled && typedoc --out docs --target es6 --theme minimal src",
     "start": "tsc -w & rollup -c rollup.config.ts -w",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -31,8 +31,7 @@
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "commit": "git-cz",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
-    "export": "rollup -c rollup.config.ts --output.format iife --output.file export/$npm_package_name.js --name $npm_package_projectName"
+    "semantic-release-prepare": "ts-node tools/semantic-release-prepare"
   },
   "config": {
     "commitizen": {
