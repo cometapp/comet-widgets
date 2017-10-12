@@ -6,7 +6,9 @@ import Utils from '../comet-utils'
 
 import CarouselTemplate from './carousel-template'
 
-// Carousel component
+/**
+ * Carousel component
+ */
 export class Carousel {
   // state control
   private load: Promise<boolean>
@@ -95,7 +97,9 @@ export class Carousel {
     })
   }
 
-  // Start to display the carousel
+  /**
+   * Start to display the carousel
+   */
   start(firstSlide?: number): Promise<boolean> {
     if (!this.load) {
       return Promise.reject(false)
@@ -148,7 +152,9 @@ export class Carousel {
       })
   }
 
-  // Hide the carousel
+  /**
+   * Hide the carousel
+   */
   stop() {
     // Set state
     this.cycling = false
@@ -156,7 +162,9 @@ export class Carousel {
     CarouselTemplate.stop(this.options)
   }
 
-  // If the carousel was stopped, restart it
+  /**
+   * Restart the carousel if it was stopped
+   */
   private restart(firstSlide?: number) {
     // Set state
     this.cycling = true

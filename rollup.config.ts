@@ -14,7 +14,7 @@ export default {
   ],
   sourcemap: true,
   external: [ 'jquery', 'bootstrap' ],
-  globals: { 'jquery': '$' },
+  globals: { 'jquery': 'jQuery' },
   watch: {
     include: 'compiled/**',
   },
