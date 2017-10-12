@@ -11,14 +11,15 @@ These plugins depend on [jQuery](https://jquery.com/) and [Bootstrap](https://ge
 # Installation
 
 ## As an IIFE
+
+Get the library file
 ```sh
 git clone git@github.com:cometapp/comet-widgets.git comet-widgets
 cd comet-widgets && npm install && npm run build
 # the library is in the export folder
 ```
 
-# Usage
-
+Import them into your html
 ```html
 <!-- include bootstrap.css -->
 <!-- include jquery.js -->
