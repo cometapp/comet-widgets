@@ -1,7 +1,7 @@
 jest.mock('../src/services/rest')
 console.error = jest.fn(err => {});
 
-import * as CometWidgets from '../src/index'
+import * as CometWidgets from '../src/comet-widgets'
 import Utils from '../src/comet-utils'
 import ApiService from '../src/services/api'
 
