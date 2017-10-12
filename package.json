@@ -1,7 +1,7 @@
 {
   "name": "comet-widgets",
   "projectName": "CometWidgets",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "keywords": [],
   "main": "dist/comet-widgets.umd",
