@@ -10,25 +10,9 @@ These plugins depend on [jQuery](https://jquery.com/) and [Bootstrap](https://ge
 
 # Installation
 
-## As a typescript library
-
-Get the library file
+Get the library
 ```sh
-npm i --save comet-widgets
-```
-
-Import it in your code
-```javascript
-import * from 'comet-widgets'
-```
-
-## In a browser
-
-Get the library file
-```sh
-git clone git@github.com:cometapp/comet-widgets.git comet-widgets
-cd comet-widgets && npm install && npm run build
-# the library is in the export folder
+bower install comet-widgets
 ```
 
 Import it in your html
@@ -36,7 +20,7 @@ Import it in your html
 <!-- include bootstrap.css -->
 <!-- include jquery.js -->
 <!-- include bootstrap.js -->
-<script src="...link/to/the/file/comet-widgets.js"></script>
+<script src="./bower_components/comet-widgets/dist/comet-widgets.js"></script>
 ```
 
 # Widgets list
@@ -45,7 +29,7 @@ Import it in your html
 Automatically displays a fullscreen slideshow of the pictures existing in an album.
 
 ```js
-var carousel = new CometWidgets.carousel('ALBUM_ID');
+var carousel = new cometWidgets.carousel('ALBUM_ID');
 carousel.start();
 // use carousel.stop() to stop the slideshow
 ```
@@ -55,6 +39,10 @@ Thel `ALBUM_ID` is either a comet `short_id` if the album owns one, or the `univ
 # Examples
 
 Cf the [example folder](https://github.com/cometapp/comet-widgets/tree/master/example).
+
+# Documentation
+
+Check out the [github page of the project](https://cometapp.github.io/comet-widgets/).
 
 # Licence
 [MIT licence](https://opensource.org/licenses/MIT)
