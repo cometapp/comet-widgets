@@ -1,7 +1,7 @@
 {
   "name": "comet-widgets",
   "projectName": "CometWidgets",
-  "version": "0.1.3",
+  "version": "0.1.4-development",
   "description": "",
   "keywords": [],
   "main": "dist/comet-widgets.js",
@@ -30,7 +30,7 @@
     "deploy-docs": "ts-node tools/gh-pages-publish",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "commit": "git-cz",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "semantic-release": "semantic-release pre && semantic-release post",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare"
   },
   "config": {
