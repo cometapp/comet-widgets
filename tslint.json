@@ -4,6 +4,8 @@
     "tslint-config-prettier"
   ],
   "rules": {
-    "variable-name": false
+    "variable-name": false,
+    "no-empty": false,
+    "handle-callback-err": false
   }
 }
