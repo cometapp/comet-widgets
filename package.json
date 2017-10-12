@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "description": "",
   "keywords": [],
-  "main": "dist/comet-widgets.umd.js",
+  "main": "dist/comet-widgets.umd",
   "module": "dist/comet-widgets.es5.js",
   "typings": "dist/types/comet-widgets.d.ts",
   "files": [
@@ -13,7 +13,7 @@
   "author": "Florent Hobein <florent@hobein.fr>",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/cometapp/comet-widgets"
   },
   "license": "MIT",
   "engines": {
