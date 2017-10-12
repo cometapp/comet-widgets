@@ -4,15 +4,17 @@ Comet Widgets [![Build Status](https://travis-ci.org/cometapp/comet-widgets.svg?
 ===
 > A list of javascript tools to interact with [Comet albums](https://cometapp.io)
 
-# Requirements
+# Dependencies
 
 These plugins depend on [jQuery](https://jquery.com/) and [Bootstrap](https://getbootstrap.com) to work.
 
 # Installation
 
+## As an IIFE
 ```sh
 git clone git@github.com:cometapp/comet-widgets.git comet-widgets
-# the library is in the dist folder
+cd comet-widgets && npm install && npm run build
+# the library is in the export folder
 ```
 
 # Usage

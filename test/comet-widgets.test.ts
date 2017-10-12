@@ -65,12 +65,16 @@ describe('Carousel tests', () => {
 
   it ("shoud start with an album id", () => {
     let carousel = new CometWidgets.carousel('comet');
-    expect(carousel.start()).resolves.toBeDefined();
+    carousel.start().then((value) => {
+      expect(value).toBeTruthy();
+    })
   })
 
   it ("shoud start with an album short id", () => {
     let carousel = new CometWidgets.carousel('5566dcdf0180d753a5002570');
-    expect(carousel.start()).resolves.toBeDefined();
+    carousel.start().then((value) => {
+      expect(value).toBeTruthy();
+    })
   })
 
 })
