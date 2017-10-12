@@ -10,7 +10,7 @@
   "files": [
     "dist"
   ],
-  "author": "Florent Hobein <florent.hobein@gmail.com>",
+  "author": "Florent Hobein <florent@hobein.fr>",
   "repository": {
     "type": "git",
     "url": ""
@@ -22,7 +22,7 @@
   "scripts": {
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
-    "build": "tsc && rollup -c rollup.config.ts && rimraf compiled && typedoc --out dist/docs --target es6 --theme minimal src",
+    "build": "tsc && rollup -c rollup.config.ts && npm run export && rimraf compiled && typedoc --out dist/docs --target es6 --theme minimal src",
     "start": "tsc -w & rollup -c rollup.config.ts -w",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -32,7 +32,7 @@
     "commit": "git-cz",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
-    "export": "rimraf compiled dist types && tsc && rollup -c rollup.config.ts --output.format iife --output.file dist/$npm_package_name.$npm_package_version.js --name $npm_package_projectName"
+    "export": "rollup -c rollup.config.ts --output.format iife --output.file export/$npm_package_name.$npm_package_version.js --name $npm_package_projectName"
   },
   "config": {
     "commitizen": {
@@ -44,6 +44,7 @@
     }
   },
   "jest": {
+    "setupFiles": [ "<rootDir>/test/test-env.ts" ],
     "transform": {
       ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
@@ -69,8 +70,8 @@
     "mapCoverage": true
   },
   "devDependencies": {
-    "@types/jest": "^21.1.0",
-    "@types/node": "^8.0.0",
+    "@types/jest": "^21.1.2",
+    "@types/node": "^8.0.34",
     "axios": "^0.16.2",
     "colors": "^1.1.2",
     "commitizen": "^2.9.6",
@@ -88,6 +89,7 @@
     "rimraf": "^2.6.1",
     "rollup": "^0.50.0",
     "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-inject": "^2.0.0",
     "rollup-plugin-json": "^2.3.0",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-sourcemaps": "^0.4.2",
@@ -99,14 +101,13 @@
     "tslint-config-standard": "^6.0.0",
     "typedoc": "^0.8.0",
     "typescript": "^2.3.4",
-    "validate-commit-msg": "^2.12.2",
-    "whatwg-fetch": "^2.0.3"
+    "validate-commit-msg": "^2.12.2"
   },
   "dependencies": {
     "@types/bootstrap": "^3.3.36",
     "@types/core-js": "^0.9.43",
     "@types/jquery": "^3.2.13",
-    "jquery": "^3.2.1",
-    "promise-polyfill": "6.0.2"
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.2.1"
   }
 }

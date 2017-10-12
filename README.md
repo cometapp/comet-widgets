@@ -1,6 +1,6 @@
-**WORK IN PROGRESS** [![Build Status](https://travis-ci.org/cometapp/comet-widgets.svg?branch=master)](https://travis-ci.org/cometapp/comet-widgets)
+**WORK IN PROGRESS**
 
-Comet Widgets
+Comet Widgets [![Build Status](https://travis-ci.org/cometapp/comet-widgets.svg?branch=master)](https://travis-ci.org/cometapp/comet-widgets)
 ===
 > A list of javascript tools to interact with [Comet albums](https://cometapp.io)
 

@@ -1,6 +1,6 @@
 import $ from 'jquery'
 
-import ApiService from '../comet-services'
+import ApiService from '../services/api'
 import { AlbumModel, MediaModel } from '../models/index'
 import { Utils } from '../comet-utils'
 

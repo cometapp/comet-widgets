@@ -2,6 +2,7 @@
 // import commonjs from 'rollup-plugin-commonjs'
 import sourceMaps from 'rollup-plugin-sourcemaps'
 import camelCase from 'lodash.camelcase'
+import inject from 'rollup-plugin-inject';
 
 // import jQuery from 'jquery';
 
@@ -23,6 +24,11 @@ export default {
     include: 'compiled/**',
   },
   plugins: [
+    inject({
+      include: '**/*.js',
+      exclude: 'node_modules/**',
+      jQuery: 'jquery',
+    })
     // typescript(),
     // json({
     //   exclude: [

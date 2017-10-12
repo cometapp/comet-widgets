@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 // const $window = $(window);
 
-export class Utils {
+export default class Utils {
 
   public static isUuid(uuid: string): boolean {
     if (!uuid || uuid.length !== 24 || !uuid.match(/[a-f0-9]/)) {

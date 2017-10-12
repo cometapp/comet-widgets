@@ -1,0 +1,9 @@
+{
+  "code": 200,
+  "message": "Success",
+  "data": {
+    "uuid": "5566dcdf0180d753a5002570",
+    "short_id": "comet",
+    "title": "Comet story"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "code": 200,
+  "message": "Success",
+  "data": [{
+      "uuid": "5566dd2e0180d753a50025a3",
+      "type": 0,
+      "owner": "5502c6e40180d72527000004",
+      "created_at": "2011-08-14T10:18:30Z",
+      "taken_at": "2011-08-14T10:18:30Z",
+      "ratio": 1.332618025751073,
+      "formats": {
+        "s": "https://s3-eu-west-1.amazonaws.com/gaia-dev/s/57194b6b716c441a9c63fe78549e650d?AWSAccessKeyId=AKIAIPE5TJDXPCRMBWFQ&Expires=1507908051&Signature=w1W8toIJQUPErF9gGyYphHfECz4%3D"
+      }
+    },
+    {
+      "uuid": "5566f2260180d753a50025e8",
+      "type": 0,
+      "owner": "5502c6e40180d72527000003",
+      "created_at": "2011-09-15T10:18:55Z",
+      "taken_at": "2011-09-15T10:18:55Z",
+      "ratio": 1.332618025751073,
+      "formats": {
+        "s": "https://s3-eu-west-1.amazonaws.com/gaia-dev/s/2088fcf42fb64a279aaa16e9d730911f?AWSAccessKeyId=AKIAIPE5TJDXPCRMBWFQ&Expires=1507908051&Signature=8sxkYOsOj0eoYq8cS50bGzFmdjs%3D"
+      }
+    },
+    {
+      "uuid": "5566dd050180d753a500258f",
+      "type": 0,
+      "owner": "5502c6e40180d72527000004",
+      "created_at": "2012-01-20T05:23:10Z",
+      "taken_at": "2012-01-20T05:23:10Z",
+      "ratio": 1.332618025751073,
+      "formats": {
+        "s": "https://s3-eu-west-1.amazonaws.com/gaia-dev/s/2f23ee05d3f0436d8efd0cef7ee0dab6?AWSAccessKeyId=AKIAIPE5TJDXPCRMBWFQ&Expires=1507908051&Signature=2rEAXicOpXPX3ICux1dMZ9ULUg8%3D"
+      }
+    },
+    {
+      "uuid": "5566dd0d0180d753a5002595",
+      "type": 0,
+      "owner": "5502c6e40180d72527000004",
+      "created_at": "2012-03-30T09:13:37Z",
+      "taken_at": "2012-03-30T09:13:37Z",
+      "ratio": 1.3383620689655173,
+      "formats": {
+        "s": "https://s3-eu-west-1.amazonaws.com/gaia-dev/s/7f772021457249059c4fbfbe8e66cabd?AWSAccessKeyId=AKIAIPE5TJDXPCRMBWFQ&Expires=1507908051&Signature=buxvfNAHyjjRiCLnB%2FP8oNwzakM%3D"
+      }
+    }
+  ]
+}

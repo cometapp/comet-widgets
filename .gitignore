@@ -6,5 +6,6 @@ coverage
 .vscode
 .idea
 compiled
-types
 .awcache
+dist
+export
