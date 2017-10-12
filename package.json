@@ -1,7 +1,7 @@
 {
   "name": "comet-widgets",
   "projectName": "CometWidgets",
-  "version": "0.0.3",
+  "version": "0.0.3-development",
   "description": "",
   "keywords": [],
   "main": "dist/comet-widgets.umd",
@@ -44,7 +44,9 @@
     }
   },
   "jest": {
-    "setupFiles": [ "<rootDir>/test/test-env.ts" ],
+    "setupFiles": [
+      "<rootDir>/test/test-env.ts"
+    ],
     "transform": {
       ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
@@ -93,7 +95,7 @@
     "rollup-plugin-json": "^2.3.0",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-sourcemaps": "^0.4.2",
-    "semantic-release": "^8.0.0",
+    "semantic-release": "^8.0.3",
     "ts-jest": "^21.0.0",
     "ts-node": "^3.0.6",
     "tslint": "^5.4.3",
