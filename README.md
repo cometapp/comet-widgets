@@ -22,7 +22,6 @@ Import it in your code
 import * from 'comet-widgets'
 ```
 
-
 ## In a browser
 
 Get the library file
@@ -37,7 +36,7 @@ Import it in your html
 <!-- include bootstrap.css -->
 <!-- include jquery.js -->
 <!-- include bootstrap.js -->
-<script src="...link/to/the/file/comet-widgets.0.0.1.js"></script>
+<script src="...link/to/the/file/comet-widgets.js"></script>
 ```
 
 # Widgets list

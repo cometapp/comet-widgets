@@ -1,11 +1,11 @@
 {
   "name": "comet-widgets",
   "projectName": "CometWidgets",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "keywords": [],
   "main": "dist/comet-widgets.umd",
-  "module": "dist/comet-widgets.es5.js",
+  "module": "dist/comet-widgets.es5",
   "typings": "dist/types/comet-widgets.d.ts",
   "files": [
     "dist"
@@ -32,7 +32,7 @@
     "commit": "git-cz",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
-    "export": "rollup -c rollup.config.ts --output.format iife --output.file export/$npm_package_name.$npm_package_version.js --name $npm_package_projectName"
+    "export": "rollup -c rollup.config.ts --output.format iife --output.file export/$npm_package_name.js --name $npm_package_projectName"
   },
   "config": {
     "commitizen": {
