@@ -1,23 +1,28 @@
 Comet Widgets [![Build Status](https://travis-ci.org/cometapp/comet-widgets.svg?branch=master)](https://travis-ci.org/cometapp/comet-widgets)
 ===
-> A list of javascript tools to interact with [Comet albums](https://cometapp.io)
+> A set of javascript tools to interact with [Comet albums](https://cometapp.io)
 
 # Dependencies
 
-These plugins depend on [jQuery](https://jquery.com/) and [Bootstrap](https://getbootstrap.com) to work.
+These widgets depend on [jQuery](https://jquery.com/) and [Bootstrap](https://getbootstrap.com) to work.
 
 # Installation
 
-Get the library
+Get the libraries with [bower](https://bower.io/)
 ```sh
 bower install comet-widgets
 ```
 
 Import it in your html
 ```html
-<!-- include bootstrap.css -->
-<!-- include jquery.js -->
-<!-- include bootstrap.js -->
+<!-- include css dependencies -->
+<link rel="stylesheet" href="./bower_components/bootstrap/css/bootstrap.min.css" />
+
+<!-- include js dependencies -->
+<script src="./bower_components/jquery/dist/jquery.min.js"></script>
+<script src="./bower_components/bootstrap/js/bootstrap.min.js"></script>
+
+<!-- include comet-widget -->
 <script src="./bower_components/comet-widgets/dist/comet-widgets.js"></script>
 ```
 
