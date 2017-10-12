@@ -7,9 +7,9 @@ const Rest = {
   get: (url) => new Promise((resolve, reject) => {
 
     // Matches
-    var regAlbum = /\/albums\/([a-z0-9]+)$/g;
-    var regAlbumShort = /\/albums\/short_id\/([a-zA-Z0-9]+)$/g;
-    var regAlbumMedias = /\/albums\/([a-z0-9]+)\/medias(?:\?.*)?$/g;
+    let regAlbum = /\/albums\/([a-z0-9]+)$/g;
+    let regAlbumShort = /\/albums\/short_id\/([a-zA-Z0-9]+)$/g;
+    let regAlbumMedias = /\/albums\/([a-z0-9]+)\/medias(?:\?.*)?$/g;
 
     let resource = '';
     let albumId = '';
