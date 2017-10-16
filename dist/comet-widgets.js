@@ -119,8 +119,9 @@ var CarouselTemplate = /** @class */ (function () {
             tpls.items =
                 tpls.items + CarouselTemplate.getTemplate('item', { carousel: carousel, i: i });
         }
-        if (options.controls)
+        if (options.controls) {
             tpls.controls = CarouselTemplate.getTemplate('controls', { carousel: carousel });
+        }
         // Render the template & append to body
         var template = CarouselTemplate.getTemplate('global', { carousel: carousel });
         CarouselTemplate.display(template, options);
@@ -156,7 +157,7 @@ var CarouselTemplate = /** @class */ (function () {
         // if I do that in the template, carousel is not working
         $items.eq(0).addClass('active');
         $items.height($container.height()).css({
-            backgroundColor: 'black',
+            // backgroundColor: 'black',
             backgroundSize: 'contain',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat'
@@ -173,7 +174,7 @@ var CarouselTemplate = /** @class */ (function () {
         if (fullscreen) {
             // Set height
             var windowHeight = $$1(window).height();
-            $items.height(windowHeight);
+            $items.height(windowHeight).css({ backgroundColor: 'black' });
             // on resize
             $$1(window).on('resize', function () {
                 var windowHeight = $$1(window).height();

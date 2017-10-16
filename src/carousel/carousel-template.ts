@@ -27,8 +27,9 @@ export default class CarouselTemplate {
       tpls.items =
         tpls.items + CarouselTemplate.getTemplate('item', { carousel, i })
     }
-    if (options.controls)
+    if (options.controls) {
       tpls.controls = CarouselTemplate.getTemplate('controls', { carousel });
+    }
 
     // Render the template & append to body
     let template = CarouselTemplate.getTemplate('global', { carousel })
@@ -71,7 +72,7 @@ export default class CarouselTemplate {
     // if I do that in the template, carousel is not working
     $items.eq(0).addClass('active')
     $items.height($container.height() as number).css({
-      backgroundColor: 'black',
+      // backgroundColor: 'black',
       backgroundSize: 'contain',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat'
@@ -90,7 +91,7 @@ export default class CarouselTemplate {
 
       // Set height
       let windowHeight = $(window).height() as number
-      $items.height(windowHeight);
+      $items.height(windowHeight).css({ backgroundColor: 'black' });
 
       // on resize
       $(window).on('resize', () => {
