@@ -12,6 +12,10 @@
 	</head>
 	<body>
 
+    <div id="myCarousel" style="width:400px;height:300px;background:grey;">
+
+    </div>
+
     <!-- jQuery & bootstrap js -->
     <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.js"></script>
@@ -22,7 +26,13 @@
 		<script>
       $('window').ready(function() {
 
-        var carousel = new cometWidgets.carousel('comet');
+        var carousel = new cometWidgets.carousel('comet', {
+          selector: '#myCarousel', // if none specified, will be displayed fullscreen
+          format: 'xl', // quality of the picture ('o', 'xl', 'l', 'm', 's')
+          interval: 3000, // define the time spent on each picture
+          controls: false, // if set to true, show the controls
+          loop: true, // if set to false, will stop at the end
+        });
         carousel.start();
         // carousel.stop(); // stop the carousel
         // carousel.start(); // restart the carousel

@@ -6,7 +6,7 @@ export default class CarouselTemplate {
     let carousel: any = {
       id: options.id,
       slides: [],
-      tpls: { indicators: '', items: '' }
+      tpls: { indicators: '', items: '', controls: '' }
     }
     let template = CarouselTemplate.getTemplate('global', { carousel })
     CarouselTemplate.display(template, options)
@@ -14,7 +14,7 @@ export default class CarouselTemplate {
 
   public static render(slides: string[], options: any) {
     // Create the carousel object
-    let tpls: any = { indicators: '', items: '' }
+    let tpls: any = { indicators: '', items: '', controls: '' }
     let carousel: any = { id: options.id, slides: slides, tpls: tpls }
 
     // Render the subtemplates
@@ -27,6 +27,8 @@ export default class CarouselTemplate {
       tpls.items =
         tpls.items + CarouselTemplate.getTemplate('item', { carousel, i })
     }
+    if (options.controls)
+      tpls.controls = CarouselTemplate.getTemplate('controls', { carousel });
 
     // Render the template & append to body
     let template = CarouselTemplate.getTemplate('global', { carousel })
@@ -54,17 +56,21 @@ export default class CarouselTemplate {
   }
 
   protected static display(template: string, options: any) {
-    // Replace
+
+    let fullscreen = !options.selector || !$(`${options.selector}`).length;
+    let $container = fullscreen ? $('body') : $(`${options.selector}`);
+
+    // If existing, replace
     if ($(`#${options.id}`).length) {
       $(`#${options.id}`).replaceWith(template)
     } else {
-      $('body').append(template)
+      $container.append(template);
     }
-    let $items = $(`#${options.id} .item`)
-    let windowHeight = $(window).height() as number
+
+    let $items = $(`#${options.id} .item`);
     // if I do that in the template, carousel is not working
     $items.eq(0).addClass('active')
-    $items.height(windowHeight).css({
+    $items.height($container.height() as number).css({
       backgroundColor: 'black',
       backgroundSize: 'contain',
       backgroundPosition: 'center',
@@ -79,20 +85,28 @@ export default class CarouselTemplate {
       $(this).remove()
     })
 
-    // on resize
-    $(window).on('resize', () => {
-      let windowHeight = $(window).height() as number
-      $items.height(windowHeight)
-    })
+    // Fullscreen options
+    if (fullscreen) {
 
-    // Display the template
-    $(`#${options.id}`).css({
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%'
-    })
+      // Set height
+      let windowHeight = $(window).height() as number
+      $items.height(windowHeight);
+
+      // on resize
+      $(window).on('resize', () => {
+        let windowHeight = $(window).height() as number
+        $items.height(windowHeight)
+      })
+
+      // Display the template
+      $(`#${options.id}`).css({
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%'
+      })
+    }
   }
 
   // start the carousel
@@ -122,14 +136,7 @@ export default class CarouselTemplate {
       </div>
 
       <!-- Controls -->
-      <!-- <a class="left carousel-control" href="#${carousel.id}" role="button" data-slide="prev">
-        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-      </a>
-      <a class="right carousel-control" href="#${carousel.id}" role="button" data-slide="next">
-        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-      </a> -->
+      ${carousel.tpls.controls}
     </div>`
     const indicator = `
       <li data-target="#${carousel.id}" data-slide-to="${i}"${i === 0
@@ -137,6 +144,15 @@ export default class CarouselTemplate {
       : ''}></li>`
     const item = `
       <div class="item"><img src="${carousel.slides[i]}" /></div>`
+    const controls = `
+      <a class="left carousel-control" href="#${carousel.id}" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="right carousel-control" href="#${carousel.id}" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>`
 
     switch (template) {
       case 'global':
@@ -145,6 +161,8 @@ export default class CarouselTemplate {
         return indicator
       case 'item':
         return item
+      case 'controls':
+        return controls
       default:
         return ''
     }

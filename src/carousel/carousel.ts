@@ -41,22 +41,25 @@ export class Carousel {
 
       // Define the options
       let defaultOptions = {
-        selector: null, // TODO if a selector is specified, the carousel is not fullscreen
+        selector: null, // if a selector is specified, the carousel is not fullscreen
+        format: 'o', // Dimensions of the pictures (o, xl, l, m, s)
+        controls: false, // show the controls or not
         interval: 5000, // duration of every picture
+        loop: true, // will start again when reached the last picture
         infos: true, // TODO wether to display photo informations, like the user or the date
         watch: false, // TODO will regularily ask the server for new pictures and auto-update itself
-        loop: true // will start again when reached the last picture
       }
       delete userOptions.id
       this.options = $.extend({}, defaultOptions, userOptions)
-      if (
-        this.options.selector &&
-        this.options.selector.match(/^\#[a-zA-Z0-9\_\-]+$/g)
-      ) {
-        this.options.id = this.options.selector.substring(1)
-      } else {
-        this.options.id = `comet-gallery-${Math.floor(Math.random() * 1000)}`
-      }
+      this.options.id = `comet-gallery-${Math.floor(Math.random() * 1000)}`
+      // if (
+      //   this.options.selector &&
+      //   this.options.selector.match(/^\#[a-zA-Z0-9\_\-]+$/g)
+      // ) {
+      //   this.options.id = this.options.selector.substring(1)
+      // } else {
+      //   this.options.id = `comet-gallery-${Math.floor(Math.random() * 1000)}`
+      // }
 
       // Find the album & the medias
       let promise: Promise<AlbumModel>
@@ -74,7 +77,8 @@ export class Carousel {
         this.album = album
 
         // Then find the medias
-        this.choosenFormat = Utils.bestMediaFormat()
+        // this.choosenFormat = Utils.bestMediaFormat()
+        this.choosenFormat = this.options.format;
         ApiService.getAlbumMedias(album.uuid, {
           format: this.choosenFormat
         }).then(medias => {

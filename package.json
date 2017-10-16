@@ -4,8 +4,8 @@
   "version": "0.1.4-development",
   "description": "",
   "keywords": [],
-  "main": "dist/comet-widgets.js",
-  "module": "export/comet-widgets.es5.js",
+  "main": "dist/comet-widgets",
+  "module": "export/comet-widgets",
   "typings": "export/types/comet-widgets.d.ts",
   "files": [
     "dist"

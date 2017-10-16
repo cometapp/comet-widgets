@@ -100,14 +100,14 @@ var CarouselTemplate = /** @class */ (function () {
         var carousel = {
             id: options.id,
             slides: [],
-            tpls: { indicators: '', items: '' }
+            tpls: { indicators: '', items: '', controls: '' }
         };
         var template = CarouselTemplate.getTemplate('global', { carousel: carousel });
         CarouselTemplate.display(template, options);
     };
     CarouselTemplate.render = function (slides, options) {
         // Create the carousel object
-        var tpls = { indicators: '', items: '' };
+        var tpls = { indicators: '', items: '', controls: '' };
         var carousel = { id: options.id, slides: slides, tpls: tpls };
         // Render the subtemplates
         for (var i in carousel.slides) {
@@ -119,6 +119,8 @@ var CarouselTemplate = /** @class */ (function () {
             tpls.items =
                 tpls.items + CarouselTemplate.getTemplate('item', { carousel: carousel, i: i });
         }
+        if (options.controls)
+            tpls.controls = CarouselTemplate.getTemplate('controls', { carousel: carousel });
         // Render the template & append to body
         var template = CarouselTemplate.getTemplate('global', { carousel: carousel });
         CarouselTemplate.display(template, options);
@@ -141,18 +143,19 @@ var CarouselTemplate = /** @class */ (function () {
         $$1("#" + options.id).carousel("" + nb);
     };
     CarouselTemplate.display = function (template, options) {
-        // Replace
+        var fullscreen = !options.selector || !$$1("" + options.selector).length;
+        var $container = fullscreen ? $$1('body') : $$1("" + options.selector);
+        // If existing, replace
         if ($$1("#" + options.id).length) {
             $$1("#" + options.id).replaceWith(template);
         }
         else {
-            $$1('body').append(template);
+            $container.append(template);
         }
         var $items = $$1("#" + options.id + " .item");
-        var windowHeight = $$1(window).height();
         // if I do that in the template, carousel is not working
         $items.eq(0).addClass('active');
-        $items.height(windowHeight).css({
+        $items.height($container.height()).css({
             backgroundColor: 'black',
             backgroundSize: 'contain',
             backgroundPosition: 'center',
@@ -166,19 +169,25 @@ var CarouselTemplate = /** @class */ (function () {
                 .css({ backgroundImage: "url(" + src + ")" });
             $$1(this).remove();
         });
-        // on resize
-        $$1(window).on('resize', function () {
+        // Fullscreen options
+        if (fullscreen) {
+            // Set height
             var windowHeight = $$1(window).height();
             $items.height(windowHeight);
-        });
-        // Display the template
-        $$1("#" + options.id).css({
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%'
-        });
+            // on resize
+            $$1(window).on('resize', function () {
+                var windowHeight = $$1(window).height();
+                $items.height(windowHeight);
+            });
+            // Display the template
+            $$1("#" + options.id).css({
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%'
+            });
+        }
     };
     // start the carousel
     CarouselTemplate.start = function (options) {
@@ -193,11 +202,12 @@ var CarouselTemplate = /** @class */ (function () {
     };
     CarouselTemplate.getTemplate = function (template, params) {
         var carousel = params.carousel, i = params.i;
-        var global = "\n    <div id=\"" + carousel.id + "\" class=\"carousel slide\" data-ride=\"carousel\">\n      <!-- Indicators -->\n      <!-- <ol class=\"carousel-indicators\">\n        " + carousel.tpls.indicators + "\n      </ol> -->\n\n      <!-- Slides -->\n      <div class=\"carousel-inner\" role=\"listbox\">\n        " + carousel.tpls.items + "\n      </div>\n\n      <!-- Controls -->\n      <!-- <a class=\"left carousel-control\" href=\"#" + carousel.id + "\" role=\"button\" data-slide=\"prev\">\n        <span class=\"glyphicon glyphicon-chevron-left\" aria-hidden=\"true\"></span>\n        <span class=\"sr-only\">Previous</span>\n      </a>\n      <a class=\"right carousel-control\" href=\"#" + carousel.id + "\" role=\"button\" data-slide=\"next\">\n        <span class=\"glyphicon glyphicon-chevron-right\" aria-hidden=\"true\"></span>\n        <span class=\"sr-only\">Next</span>\n      </a> -->\n    </div>";
+        var global = "\n    <div id=\"" + carousel.id + "\" class=\"carousel slide\" data-ride=\"carousel\">\n      <!-- Indicators -->\n      <!-- <ol class=\"carousel-indicators\">\n        " + carousel.tpls.indicators + "\n      </ol> -->\n\n      <!-- Slides -->\n      <div class=\"carousel-inner\" role=\"listbox\">\n        " + carousel.tpls.items + "\n      </div>\n\n      <!-- Controls -->\n      " + carousel.tpls.controls + "\n    </div>";
         var indicator = "\n      <li data-target=\"#" + carousel.id + "\" data-slide-to=\"" + i + "\"" + (i === 0
             ? ' class="active"'
             : '') + "></li>";
         var item = "\n      <div class=\"item\"><img src=\"" + carousel.slides[i] + "\" /></div>";
+        var controls = "\n      <a class=\"left carousel-control\" href=\"#" + carousel.id + "\" role=\"button\" data-slide=\"prev\">\n        <span class=\"glyphicon glyphicon-chevron-left\" aria-hidden=\"true\"></span>\n        <span class=\"sr-only\">Previous</span>\n      </a>\n      <a class=\"right carousel-control\" href=\"#" + carousel.id + "\" role=\"button\" data-slide=\"next\">\n        <span class=\"glyphicon glyphicon-chevron-right\" aria-hidden=\"true\"></span>\n        <span class=\"sr-only\">Next</span>\n      </a>";
         switch (template) {
             case 'global':
                 return global;
@@ -205,6 +215,8 @@ var CarouselTemplate = /** @class */ (function () {
                 return indicator;
             case 'item':
                 return item;
+            case 'controls':
+                return controls;
             default:
                 return '';
         }
@@ -239,20 +251,24 @@ var Carousel = /** @class */ (function () {
             // Define the options
             var defaultOptions = {
                 selector: null,
+                format: 'o',
+                controls: false,
                 interval: 5000,
+                loop: true,
                 infos: true,
                 watch: false,
-                loop: true // will start again when reached the last picture
             };
             delete userOptions.id;
             _this.options = $$1.extend({}, defaultOptions, userOptions);
-            if (_this.options.selector &&
-                _this.options.selector.match(/^\#[a-zA-Z0-9\_\-]+$/g)) {
-                _this.options.id = _this.options.selector.substring(1);
-            }
-            else {
-                _this.options.id = "comet-gallery-" + Math.floor(Math.random() * 1000);
-            }
+            _this.options.id = "comet-gallery-" + Math.floor(Math.random() * 1000);
+            // if (
+            //   this.options.selector &&
+            //   this.options.selector.match(/^\#[a-zA-Z0-9\_\-]+$/g)
+            // ) {
+            //   this.options.id = this.options.selector.substring(1)
+            // } else {
+            //   this.options.id = `comet-gallery-${Math.floor(Math.random() * 1000)}`
+            // }
             // Find the album & the medias
             var promise;
             if (Utils.isUuid(id)) {
@@ -269,7 +285,8 @@ var Carousel = /** @class */ (function () {
                 }
                 _this.album = album;
                 // Then find the medias
-                _this.choosenFormat = Utils.bestMediaFormat();
+                // this.choosenFormat = Utils.bestMediaFormat()
+                _this.choosenFormat = _this.options.format;
                 ApiService.getAlbumMedias(album.uuid, {
                     format: _this.choosenFormat
                 }).then(function (medias) {
