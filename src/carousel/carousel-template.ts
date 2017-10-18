@@ -1,28 +1,44 @@
+// TODO FIX a onresize is defined whenever a new picture is inserted with watch
+// TODO FIX partial duplicate with livereplace and display
+
 import $ from 'jquery'
 import 'bootstrap'
 
+import { Slide } from '../models/index'
+
 export default class CarouselTemplate {
+
+  /**
+   * Render the content while waiting for the slides
+   * @param {any}
+   */
   public static renderWait(options: any) {
     let carousel: any = {
       id: options.id,
+      uuids: [],
       slides: [],
-      tpls: { indicators: '', items: '', controls: '' }
+      tpls: { indicators: '<!-- hidden -->', items: '', controls: '<!-- hidden -->' }
     }
     let template = CarouselTemplate.getTemplate('global', { carousel })
     CarouselTemplate.display(template, options)
   }
 
-  public static render(slides: string[], options: any) {
+  /**
+   * Render the slides into html
+   * @param {string[]}
+   * @param {any}
+   */
+  public static render(slides: Slide[], options: any) {
     // Create the carousel object
-    let tpls: any = { indicators: '', items: '', controls: '' }
-    let carousel: any = { id: options.id, slides: slides, tpls: tpls }
+    let tpls: any = { indicators: '<!-- hidden -->', items: '', controls: '<!-- hidden -->' }
+    let carousel: any = { id: options.id, uuids: slides.map(s => s.uuid), slides: slides.map(s => s.link), tpls: tpls }
 
     // Render the subtemplates
-    for (let i in carousel.slides) {
-      tpls.indicators =
-        tpls.indicators +
-        CarouselTemplate.getTemplate('indicator', { carousel, i })
-    }
+    // for (let i in carousel.slides) {
+    //   tpls.indicators =
+    //     tpls.indicators +
+    //     CarouselTemplate.getTemplate('indicator', { carousel, i })
+    // }
     for (let i in carousel.slides) {
       tpls.items =
         tpls.items + CarouselTemplate.getTemplate('item', { carousel, i })
@@ -37,25 +53,110 @@ export default class CarouselTemplate {
     CarouselTemplate.start(options)
   }
 
-  // restart a stopped carousel
+  /**
+   * Given a set of slides, make a diff and insert the new ones in the process
+   * @param {string[]}
+   * @param {any}
+   */
+  public static liveRender(slides: Slide[], options: any) {
+
+    // Create the carousel object
+    let tpls: any = { indicators: '<!-- hidden -->', items: '', controls: '<!-- hidden -->' }
+    let carousel: any = { id: options.id, uuids: slides.map(s => s.uuid), slides: slides.map(s => s.link), tpls: tpls }
+
+    // Insert the new ones
+    let previousId = '';
+    let inserted = [];
+    for (let i in carousel.slides) {
+      let id = `${carousel.id}-${carousel.uuids[i]}`;
+      if (!$('#'+id).length) { // if the item doesn't exist
+        let tpl = CarouselTemplate.getTemplate('item', { carousel, i });
+        if (previousId === '') {
+          $(`#${id} .carousel-inner`).prepend(tpl);
+        } else {
+          $(`#${previousId}`).after(tpl);
+        }
+        inserted.push(id);
+      }
+      previousId = id;
+    }
+
+    if (!inserted.length) {
+      return;
+    }
+
+    let $items = $('#'+inserted.join(',#'));
+
+    // Format the new pictures
+    let fullscreen = !options.selector || !$(`${options.selector}`).length;
+    let $container = fullscreen ? $('body') : $(`${options.selector}`);
+    if ($container) {
+
+      $items.height($container.height() as number).css({
+        // backgroundColor: 'black',
+        backgroundSize: 'contain',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      })
+
+      // transform the imgs into background-images
+      $items.find('img').each(function() {
+        let src = $(this).attr('src')
+        $(this)
+          .parent('.item')
+          .css({ backgroundImage: `url(${src})` })
+        $(this).remove()
+      })
+
+    } else {
+
+      // Set height
+      let windowHeight = $(window).height() as number
+      $items.height(windowHeight).css({ backgroundColor: 'black' });
+
+      // on resize
+      $(window).on('resize', () => {
+        let windowHeight = $(window).height() as number
+        $items.height(windowHeight)
+      })
+    }
+
+  }
+
+  /**
+   * Restart a stopped carousel
+   * @type {[type]}
+   */
   public static restart(options: any) {
     $(`#${options.id}`)
       .fadeIn()
       .carousel('cycle')
   }
 
-  // stop the carousel
+  /**
+   * Stop the carousel
+   * @param {any}
+   */
   public static stop(options: any) {
     $(`#${options.id}`)
       .fadeOut()
       .carousel('pause')
   }
 
-  // move to a slide
+  /**
+   * Move to a specific slide
+   * @param {number}
+   * @param {any}
+   */
   public static goTo(nb: number, options: any) {
     $(`#${options.id}`).carousel(`${nb}`)
   }
 
+  /**
+   * Display the html
+   * @param {string}
+   * @param {any}
+   */
   protected static display(template: string, options: any) {
 
     let fullscreen = !options.selector || !$(`${options.selector}`).length;
@@ -110,7 +211,10 @@ export default class CarouselTemplate {
     }
   }
 
-  // start the carousel
+  /**
+   * Start the carousel
+   * @param {any}
+   */
   protected static start(options: any) {
     $(`#${options.id}`)
       .hide()
@@ -122,15 +226,16 @@ export default class CarouselTemplate {
       .fadeIn()
   }
 
+  /**
+   * Get one of the templates that makes the carousel
+   * @param  {string}
+   * @param  {any}
+   * @return {string}
+   */
   protected static getTemplate(template: string, params: any): string {
     let { carousel, i } = params
     const global = `
     <div id="${carousel.id}" class="carousel slide" data-ride="carousel">
-      <!-- Indicators -->
-      <!-- <ol class="carousel-indicators">
-        ${carousel.tpls.indicators}
-      </ol> -->
-
       <!-- Slides -->
       <div class="carousel-inner" role="listbox">
         ${carousel.tpls.items}
@@ -144,7 +249,7 @@ export default class CarouselTemplate {
       ? ' class="active"'
       : ''}></li>`
     const item = `
-      <div class="item"><img src="${carousel.slides[i]}" /></div>`
+      <div id="${carousel.id}-${carousel.uuids[i]}" class="item"><img src="${carousel.slides[i]}" /></div>`
     const controls = `
       <a class="left carousel-control" href="#${carousel.id}" role="button" data-slide="prev">
         <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>

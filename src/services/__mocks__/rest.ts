@@ -4,6 +4,8 @@ import * as fs from 'fs';
 
 const Rest = {
 
+  cache: {} as any,
+
   get: (url: string) => new Promise((resolve, reject) => {
 
     // Matches
@@ -30,12 +32,19 @@ const Rest = {
       resource = 'medias';
     }
 
+    if (Rest.cache[`${resource}_${albumId}.json`]) {
+      resolve(Rest.cache[`${resource}_${albumId}.json`]);
+      return;
+    }
+
+
     fs.readFile(`./src/services/__mocks__/data/${resource}_${albumId}.json`, 'utf8', (err, data) => {
       if (err) {
         console.error(err);
         reject(err);
         return;
       }
+      Rest.cache[`${resource}_${albumId}.json`] = JSON.parse(data);
       resolve(JSON.parse(data))
     })
   })

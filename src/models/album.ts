@@ -1,4 +1,4 @@
-export class AlbumModel {
+export class Album {
   uuid: string
   title: string
 }

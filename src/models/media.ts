@@ -1,6 +1,4 @@
-// import Map from "core-js/library"
-
-export class MediaModel {
+export class Media {
   uuid: string
   type: number
   thumbnail?: string
@@ -9,5 +7,4 @@ export class MediaModel {
   owner: string
   ratio: number
   formats: any
-  // formats: Map<string, string>;
 }

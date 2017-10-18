@@ -1,7 +1,7 @@
 import $ from 'jquery'
 
 import ApiService from '../services/api'
-import { AlbumModel, MediaModel } from '../models/index'
+import { Album, Media, Slide } from '../models/index'
 import Utils from '../comet-utils'
 
 import CarouselTemplate from './carousel-template'
@@ -10,14 +10,19 @@ import CarouselTemplate from './carousel-template'
  * Carousel component
  */
 export class Carousel {
+
+  public watchCount: number; // usefull for tests
+
   // state control
   private load: Promise<boolean>
   private loaded: boolean // if true, the data is loaded
   private cycling: boolean // if false, the slider is stopped
 
+  private watch: number; // the interval if watch is activated
+
   private options: any
-  private album: AlbumModel
-  private medias: MediaModel[]
+  private album: Album
+  private medias: Media[]
   private choosenFormat: string
 
   constructor(public id: string, userOptions: any = {}) {
@@ -42,27 +47,20 @@ export class Carousel {
       // Define the options
       let defaultOptions = {
         selector: null, // if a selector is specified, the carousel is not fullscreen
-        format: 'o', // Dimensions of the pictures (o, xl, l, m, s)
+        format: 'o', // dimensions of the pictures (o, xl, l, m, s)
         controls: false, // show the controls or not
         interval: 5000, // duration of every picture
         loop: true, // will start again when reached the last picture
-        infos: true, // TODO wether to display photo informations, like the user or the date
-        watch: false, // TODO will regularily ask the server for new pictures and auto-update itself
+        watch: false, // will regularily ask the server for new pictures and auto-update itself
+        watchInterval: 20000,
+        // infos: false, // TODO wether to display photo informations, like the user or the date
       }
       delete userOptions.id
       this.options = $.extend({}, defaultOptions, userOptions)
       this.options.id = `comet-gallery-${Math.floor(Math.random() * 1000)}`
-      // if (
-      //   this.options.selector &&
-      //   this.options.selector.match(/^\#[a-zA-Z0-9\_\-]+$/g)
-      // ) {
-      //   this.options.id = this.options.selector.substring(1)
-      // } else {
-      //   this.options.id = `comet-gallery-${Math.floor(Math.random() * 1000)}`
-      // }
 
       // Find the album & the medias
-      let promise: Promise<AlbumModel>
+      let promise: Promise<Album>
       if (Utils.isUuid(id)) {
         promise = ApiService.getAlbum(id)
       } else {
@@ -87,6 +85,17 @@ export class Carousel {
             reject(false)
             return
           }
+
+          // Sort the medias older < newer
+          medias.sort((m1,m2) => {
+            let d1 = new Date(m1.taken_at);
+            let d2 = new Date(m2.taken_at);
+            if (d1 > d2) {
+              return 1;
+            }
+            return d1 < d2 ? -1 : 0;
+          });
+
           this.medias = medias
           resolve(true)
 
@@ -99,6 +108,26 @@ export class Carousel {
         })
       })
     })
+  }
+
+  /**
+   * Wait for the carousel to be ready
+   */
+  ready(): Promise<Slide[]> {
+    if (!this.load) {
+      return Promise.reject([])
+    }
+    return this.load
+      .then(() => {
+        let slides: Slide[] = [];
+        for (let i in this.medias) {
+          slides.push({
+            uuid: this.medias[i].uuid,
+            link: this.medias[i].formats[this.choosenFormat] as string
+          });
+        }
+        return slides;
+      });
   }
 
   /**
@@ -136,9 +165,12 @@ export class Carousel {
         this.loaded = true
 
         // Render the carousel
-        let slides: string[] = []
+        let slides: Slide[] = [];
         for (let i in this.medias) {
-          slides.push(this.medias[i].formats[this.choosenFormat] as string)
+          slides.push({
+            uuid: this.medias[i].uuid,
+            link: this.medias[i].formats[this.choosenFormat] as string
+          });
         }
         CarouselTemplate.render(slides, this.options)
         // if (firstSlide) {
@@ -147,6 +179,11 @@ export class Carousel {
 
         // Set state
         this.cycling = true
+
+        // Set watch
+        if (this.options.watch) {
+          this.startWatch();
+        }
 
         return Promise.resolve(true)
       })
@@ -162,6 +199,10 @@ export class Carousel {
   stop() {
     // Set state
     this.cycling = false
+    // Clear watch
+    if (this.options.watch) {
+      this.stopWatch();
+    }
     // Stop
     CarouselTemplate.stop(this.options)
   }
@@ -172,10 +213,69 @@ export class Carousel {
   private restart(firstSlide?: number) {
     // Set state
     this.cycling = true
+    // Set watch
+    if (this.options.watch) {
+      this.startWatch();
+    }
     // Restart
     CarouselTemplate.restart(this.options)
     // if (firstSlide) {
     //   CarouselTemplate.goTo(firstSlide, this.options);
     // }
+  }
+
+  /**
+   * Start watching for new pictures in the album
+   */
+  private startWatch() {
+    this.stopWatch();
+    this.watch = window.setInterval(() => {
+
+      if (!this.album) {
+        this.stopWatch();
+        return;
+      }
+
+      this.watchCount++;
+
+      // Find the media
+      ApiService.getAlbumMedias(this.album.uuid, {
+        format: this.choosenFormat
+      }).then(medias => {
+
+        // Sort the medias older < newer
+        medias.sort((m1,m2) => {
+          let d1 = new Date(m1.taken_at);
+          let d2 = new Date(m2.taken_at);
+          if (d1 > d2) {
+            return 1;
+          }
+          return d1 < d2 ? -1 : 0;
+        });
+
+        // Save the media
+        this.medias = medias;
+
+        // Render
+        let slides: Slide[] = [];
+        for (let i in this.medias) {
+          slides.push({
+            uuid: this.medias[i].uuid,
+            link: this.medias[i].formats[this.choosenFormat] as string
+          });
+        }
+        CarouselTemplate.liveRender(slides, this.options);
+      })
+
+    }, this.options.watchInterval);
+  }
+
+  /**
+   * Stop watching for new pictures in the album
+   */
+  private stopWatch() {
+    if (this.watch) {
+      window.clearInterval(this.watch);
+    }
   }
 }
