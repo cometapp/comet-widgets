@@ -40,4 +40,19 @@ export default class Utils {
     return format;
   }
 
+  public static random(min: number, max: number): number {
+    return Math.floor(Math.random() * (max-min+1) + min);
+  }
+
+  public static shuffle<T>(array: T[]): T[] {
+    if (array.length <= 1) {
+      return array;
+    }
+    for (let i = 0; i < array.length; i++) {
+      const randomIndex = Utils.random(i, array.length - 1);
+      [array[i], array[randomIndex]] = [array[randomIndex], array[i]];
+    }
+    return array;
+  };
+
 }

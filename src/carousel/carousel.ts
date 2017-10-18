@@ -53,6 +53,7 @@ export class Carousel {
         loop: true, // will start again when reached the last picture
         watch: false, // will regularily ask the server for new pictures and auto-update itself
         watchInterval: 20000,
+        random: false, // wether to display the pictures in a random order
         // infos: false, // TODO wether to display photo informations, like the user or the date
       }
       delete userOptions.id
@@ -86,15 +87,20 @@ export class Carousel {
             return
           }
 
-          // Sort the medias older < newer
-          medias.sort((m1,m2) => {
-            let d1 = new Date(m1.taken_at);
-            let d2 = new Date(m2.taken_at);
-            if (d1 > d2) {
-              return 1;
-            }
-            return d1 < d2 ? -1 : 0;
-          });
+          if (this.options.random) {
+            // Shuffle the medias
+            medias = Utils.shuffle(medias);
+          } else {
+            // Sort the medias older < newer
+            medias.sort((m1,m2) => {
+              let d1 = new Date(m1.taken_at);
+              let d2 = new Date(m2.taken_at);
+              if (d1 > d2) {
+                return 1;
+              }
+              return d1 < d2 ? -1 : 0;
+            });
+          }
 
           this.medias = medias
           resolve(true)
@@ -243,15 +249,20 @@ export class Carousel {
         format: this.choosenFormat
       }).then(medias => {
 
-        // Sort the medias older < newer
-        medias.sort((m1,m2) => {
-          let d1 = new Date(m1.taken_at);
-          let d2 = new Date(m2.taken_at);
-          if (d1 > d2) {
-            return 1;
-          }
-          return d1 < d2 ? -1 : 0;
-        });
+        if (this.options.random) {
+          // Shuffle the medias
+          medias = Utils.shuffle(medias);
+        } else {
+          // Sort the medias older < newer
+          medias.sort((m1,m2) => {
+            let d1 = new Date(m1.taken_at);
+            let d2 = new Date(m2.taken_at);
+            if (d1 > d2) {
+              return 1;
+            }
+            return d1 < d2 ? -1 : 0;
+          });
+        }
 
         // Save the media
         this.medias = medias;

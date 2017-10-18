@@ -1,7 +1,7 @@
 {
   "name": "comet-widgets",
   "projectName": "CometWidgets",
-  "version": "0.1.4-development",
+  "version": "0.1.5-development",
   "description": "",
   "keywords": [],
   "main": "dist/comet-widgets",

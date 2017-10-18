@@ -90,31 +90,58 @@ var Utils = /** @class */ (function () {
         // }
         return format;
     };
+    Utils.random = function (min, max) {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    };
+    Utils.shuffle = function (array) {
+        if (array.length <= 1) {
+            return array;
+        }
+        for (var i = 0; i < array.length; i++) {
+            var randomIndex = Utils.random(i, array.length - 1);
+            _a = [array[randomIndex], array[i]], array[i] = _a[0], array[randomIndex] = _a[1];
+        }
+        return array;
+        var _a;
+    };
+    
     return Utils;
 }());
 
+// TODO FIX a onresize is defined whenever a new picture is inserted with watch
+// TODO FIX partial duplicate with livereplace and display
 var CarouselTemplate = /** @class */ (function () {
     function CarouselTemplate() {
     }
+    /**
+     * Render the content while waiting for the slides
+     * @param {any}
+     */
     CarouselTemplate.renderWait = function (options) {
         var carousel = {
             id: options.id,
+            uuids: [],
             slides: [],
-            tpls: { indicators: '', items: '', controls: '' }
+            tpls: { indicators: '<!-- hidden -->', items: '', controls: '<!-- hidden -->' }
         };
         var template = CarouselTemplate.getTemplate('global', { carousel: carousel });
         CarouselTemplate.display(template, options);
     };
+    /**
+     * Render the slides into html
+     * @param {string[]}
+     * @param {any}
+     */
     CarouselTemplate.render = function (slides, options) {
         // Create the carousel object
-        var tpls = { indicators: '', items: '', controls: '' };
-        var carousel = { id: options.id, slides: slides, tpls: tpls };
+        var tpls = { indicators: '<!-- hidden -->', items: '', controls: '<!-- hidden -->' };
+        var carousel = { id: options.id, uuids: slides.map(function (s) { return s.uuid; }), slides: slides.map(function (s) { return s.link; }), tpls: tpls };
         // Render the subtemplates
-        for (var i in carousel.slides) {
-            tpls.indicators =
-                tpls.indicators +
-                    CarouselTemplate.getTemplate('indicator', { carousel: carousel, i: i });
-        }
+        // for (let i in carousel.slides) {
+        //   tpls.indicators =
+        //     tpls.indicators +
+        //     CarouselTemplate.getTemplate('indicator', { carousel, i })
+        // }
         for (var i in carousel.slides) {
             tpls.items =
                 tpls.items + CarouselTemplate.getTemplate('item', { carousel: carousel, i: i });
@@ -127,22 +154,97 @@ var CarouselTemplate = /** @class */ (function () {
         CarouselTemplate.display(template, options);
         CarouselTemplate.start(options);
     };
-    // restart a stopped carousel
+    /**
+     * Given a set of slides, make a diff and insert the new ones in the process
+     * @param {string[]}
+     * @param {any}
+     */
+    CarouselTemplate.liveRender = function (slides, options) {
+        // Create the carousel object
+        var tpls = { indicators: '<!-- hidden -->', items: '', controls: '<!-- hidden -->' };
+        var carousel = { id: options.id, uuids: slides.map(function (s) { return s.uuid; }), slides: slides.map(function (s) { return s.link; }), tpls: tpls };
+        // Insert the new ones
+        var previousId = '';
+        var inserted = [];
+        for (var i in carousel.slides) {
+            var id = carousel.id + "-" + carousel.uuids[i];
+            if (!$$1('#' + id).length) {
+                var tpl = CarouselTemplate.getTemplate('item', { carousel: carousel, i: i });
+                if (previousId === '') {
+                    $$1("#" + id + " .carousel-inner").prepend(tpl);
+                }
+                else {
+                    $$1("#" + previousId).after(tpl);
+                }
+                inserted.push(id);
+            }
+            previousId = id;
+        }
+        if (!inserted.length) {
+            return;
+        }
+        var $items = $$1('#' + inserted.join(',#'));
+        // Format the new pictures
+        var fullscreen = !options.selector || !$$1("" + options.selector).length;
+        var $container = fullscreen ? $$1('body') : $$1("" + options.selector);
+        if ($container) {
+            $items.height($container.height()).css({
+                // backgroundColor: 'black',
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+            });
+            // transform the imgs into background-images
+            $items.find('img').each(function () {
+                var src = $$1(this).attr('src');
+                $$1(this)
+                    .parent('.item')
+                    .css({ backgroundImage: "url(" + src + ")" });
+                $$1(this).remove();
+            });
+        }
+        else {
+            // Set height
+            var windowHeight = $$1(window).height();
+            $items.height(windowHeight).css({ backgroundColor: 'black' });
+            // on resize
+            $$1(window).on('resize', function () {
+                var windowHeight = $$1(window).height();
+                $items.height(windowHeight);
+            });
+        }
+    };
+    /**
+     * Restart a stopped carousel
+     * @type {[type]}
+     */
     CarouselTemplate.restart = function (options) {
         $$1("#" + options.id)
             .fadeIn()
             .carousel('cycle');
     };
-    // stop the carousel
+    /**
+     * Stop the carousel
+     * @param {any}
+     */
     CarouselTemplate.stop = function (options) {
         $$1("#" + options.id)
             .fadeOut()
             .carousel('pause');
     };
-    // move to a slide
+    /**
+     * Move to a specific slide
+     * @param {number}
+     * @param {any}
+     */
     CarouselTemplate.goTo = function (nb, options) {
         $$1("#" + options.id).carousel("" + nb);
     };
+    /**
+     * Display the html
+     * @param {string}
+     * @param {any}
+     */
     CarouselTemplate.display = function (template, options) {
         var fullscreen = !options.selector || !$$1("" + options.selector).length;
         var $container = fullscreen ? $$1('body') : $$1("" + options.selector);
@@ -190,7 +292,10 @@ var CarouselTemplate = /** @class */ (function () {
             });
         }
     };
-    // start the carousel
+    /**
+     * Start the carousel
+     * @param {any}
+     */
     CarouselTemplate.start = function (options) {
         $$1("#" + options.id)
             .hide()
@@ -201,13 +306,19 @@ var CarouselTemplate = /** @class */ (function () {
         })
             .fadeIn();
     };
+    /**
+     * Get one of the templates that makes the carousel
+     * @param  {string}
+     * @param  {any}
+     * @return {string}
+     */
     CarouselTemplate.getTemplate = function (template, params) {
         var carousel = params.carousel, i = params.i;
-        var global = "\n    <div id=\"" + carousel.id + "\" class=\"carousel slide\" data-ride=\"carousel\">\n      <!-- Indicators -->\n      <!-- <ol class=\"carousel-indicators\">\n        " + carousel.tpls.indicators + "\n      </ol> -->\n\n      <!-- Slides -->\n      <div class=\"carousel-inner\" role=\"listbox\">\n        " + carousel.tpls.items + "\n      </div>\n\n      <!-- Controls -->\n      " + carousel.tpls.controls + "\n    </div>";
+        var global = "\n    <div id=\"" + carousel.id + "\" class=\"carousel slide\" data-ride=\"carousel\">\n      <!-- Slides -->\n      <div class=\"carousel-inner\" role=\"listbox\">\n        " + carousel.tpls.items + "\n      </div>\n\n      <!-- Controls -->\n      " + carousel.tpls.controls + "\n    </div>";
         var indicator = "\n      <li data-target=\"#" + carousel.id + "\" data-slide-to=\"" + i + "\"" + (i === 0
             ? ' class="active"'
             : '') + "></li>";
-        var item = "\n      <div class=\"item\"><img src=\"" + carousel.slides[i] + "\" /></div>";
+        var item = "\n      <div id=\"" + carousel.id + "-" + carousel.uuids[i] + "\" class=\"item\"><img src=\"" + carousel.slides[i] + "\" /></div>";
         var controls = "\n      <a class=\"left carousel-control\" href=\"#" + carousel.id + "\" role=\"button\" data-slide=\"prev\">\n        <span class=\"glyphicon glyphicon-chevron-left\" aria-hidden=\"true\"></span>\n        <span class=\"sr-only\">Previous</span>\n      </a>\n      <a class=\"right carousel-control\" href=\"#" + carousel.id + "\" role=\"button\" data-slide=\"next\">\n        <span class=\"glyphicon glyphicon-chevron-right\" aria-hidden=\"true\"></span>\n        <span class=\"sr-only\">Next</span>\n      </a>";
         switch (template) {
             case 'global':
@@ -256,20 +367,13 @@ var Carousel = /** @class */ (function () {
                 controls: false,
                 interval: 5000,
                 loop: true,
-                infos: true,
                 watch: false,
+                watchInterval: 20000,
+                random: false,
             };
             delete userOptions.id;
             _this.options = $$1.extend({}, defaultOptions, userOptions);
             _this.options.id = "comet-gallery-" + Math.floor(Math.random() * 1000);
-            // if (
-            //   this.options.selector &&
-            //   this.options.selector.match(/^\#[a-zA-Z0-9\_\-]+$/g)
-            // ) {
-            //   this.options.id = this.options.selector.substring(1)
-            // } else {
-            //   this.options.id = `comet-gallery-${Math.floor(Math.random() * 1000)}`
-            // }
             // Find the album & the medias
             var promise;
             if (Utils.isUuid(id)) {
@@ -296,6 +400,21 @@ var Carousel = /** @class */ (function () {
                         reject(false);
                         return;
                     }
+                    if (_this.options.random) {
+                        // Shuffle the medias
+                        medias = Utils.shuffle(medias);
+                    }
+                    else {
+                        // Sort the medias older < newer
+                        medias.sort(function (m1, m2) {
+                            var d1 = new Date(m1.taken_at);
+                            var d2 = new Date(m2.taken_at);
+                            if (d1 > d2) {
+                                return 1;
+                            }
+                            return d1 < d2 ? -1 : 0;
+                        });
+                    }
                     _this.medias = medias;
                     resolve(true);
                     console.info("%c" + medias.length + " %cmedias in the album %c" + album.title, 'color:blue', 'color:black', 'color:blue');
@@ -303,6 +422,26 @@ var Carousel = /** @class */ (function () {
             });
         });
     }
+    /**
+     * Wait for the carousel to be ready
+     */
+    Carousel.prototype.ready = function () {
+        var _this = this;
+        if (!this.load) {
+            return Promise.reject([]);
+        }
+        return this.load
+            .then(function () {
+            var slides = [];
+            for (var i in _this.medias) {
+                slides.push({
+                    uuid: _this.medias[i].uuid,
+                    link: _this.medias[i].formats[_this.choosenFormat]
+                });
+            }
+            return slides;
+        });
+    };
     /**
      * Start to display the carousel
      */
@@ -335,7 +474,10 @@ var Carousel = /** @class */ (function () {
             // Render the carousel
             var slides = [];
             for (var i in _this.medias) {
-                slides.push(_this.medias[i].formats[_this.choosenFormat]);
+                slides.push({
+                    uuid: _this.medias[i].uuid,
+                    link: _this.medias[i].formats[_this.choosenFormat]
+                });
             }
             CarouselTemplate.render(slides, _this.options);
             // if (firstSlide) {
@@ -343,6 +485,10 @@ var Carousel = /** @class */ (function () {
             // }
             // Set state
             _this.cycling = true;
+            // Set watch
+            if (_this.options.watch) {
+                _this.startWatch();
+            }
             return Promise.resolve(true);
         })
             .catch(function (_) {
@@ -356,6 +502,10 @@ var Carousel = /** @class */ (function () {
     Carousel.prototype.stop = function () {
         // Set state
         this.cycling = false;
+        // Clear watch
+        if (this.options.watch) {
+            this.stopWatch();
+        }
         // Stop
         CarouselTemplate.stop(this.options);
     };
@@ -365,11 +515,68 @@ var Carousel = /** @class */ (function () {
     Carousel.prototype.restart = function (firstSlide) {
         // Set state
         this.cycling = true;
+        // Set watch
+        if (this.options.watch) {
+            this.startWatch();
+        }
         // Restart
         CarouselTemplate.restart(this.options);
         // if (firstSlide) {
         //   CarouselTemplate.goTo(firstSlide, this.options);
         // }
+    };
+    /**
+     * Start watching for new pictures in the album
+     */
+    Carousel.prototype.startWatch = function () {
+        var _this = this;
+        this.stopWatch();
+        this.watch = window.setInterval(function () {
+            if (!_this.album) {
+                _this.stopWatch();
+                return;
+            }
+            _this.watchCount++;
+            // Find the media
+            ApiService.getAlbumMedias(_this.album.uuid, {
+                format: _this.choosenFormat
+            }).then(function (medias) {
+                if (_this.options.random) {
+                    // Shuffle the medias
+                    medias = Utils.shuffle(medias);
+                }
+                else {
+                    // Sort the medias older < newer
+                    medias.sort(function (m1, m2) {
+                        var d1 = new Date(m1.taken_at);
+                        var d2 = new Date(m2.taken_at);
+                        if (d1 > d2) {
+                            return 1;
+                        }
+                        return d1 < d2 ? -1 : 0;
+                    });
+                }
+                // Save the media
+                _this.medias = medias;
+                // Render
+                var slides = [];
+                for (var i in _this.medias) {
+                    slides.push({
+                        uuid: _this.medias[i].uuid,
+                        link: _this.medias[i].formats[_this.choosenFormat]
+                    });
+                }
+                CarouselTemplate.liveRender(slides, _this.options);
+            });
+        }, this.options.watchInterval);
+    };
+    /**
+     * Stop watching for new pictures in the album
+     */
+    Carousel.prototype.stopWatch = function () {
+        if (this.watch) {
+            window.clearInterval(this.watch);
+        }
     };
     return Carousel;
 }());
